@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Lab — Jordan Flaum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green: #1D9E75;
+      --green-dim: #0F6E56;
+      --green-glow: #5DCAA5;
+      --green-pale: #E1F5EE;
+      --bg: #ffffff;
+      --bg2: #f6f6f4;
+      --bg3: #ededea;
+      --text: #1a1a18;
+      --muted: #5f5e5a;
+      --border: rgba(0,0,0,0.12);
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --bg2: #1c1c1a;
+        --bg3: #242422;
+        --text: #f0ede6;
+        --muted: #9e9c96;
+        --border: rgba(255,255,255,0.1);
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .nav a {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--muted); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .nav a:hover { border-color: var(--green); color: var(--green); }
+    .nav-sep { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+    .nav-current { font-family: var(--mono); font-size: 11px; color: var(--green); }
+
+    /* ── HEADER ── */
+    .header { margin-bottom: 2.5rem; }
+    .terminal-bar {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 0.5px solid var(--border);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      padding: 9px 14px;
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #E24B4A; }
+    .dot-y { background: #EF9F27; }
+    .dot-g { background: #1D9E75; }
+    .term-title { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 8px; }
+    .terminal-body {
+      background: #04342C; border: 0.5px solid #0F6E56; border-top: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      padding: 1.75rem 2rem; font-family: var(--mono);
+    }
+    .prompt { color: #9FE1CB; font-size: 13px; margin-bottom: 4px; }
+    .prompt .p-user { color: #5DCAA5; }
+    .cmd { color: #E1F5EE; }
+    .name-block { margin-top: 1.25rem; }
+    .name-big { font-family: var(--sans); font-size: clamp(28px,5vw,42px); font-weight: 800; color: #E1F5EE; letter-spacing: -1.5px; line-height: 1; }
+    .name-big em { color: #5DCAA5; font-style: normal; }
+    .title-line { font-family: var(--mono); font-size: 13px; color: #9FE1CB; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+    .blink { animation: blink 1s step-end infinite; color: #5DCAA5; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 2.25rem; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+    .section-label { font-family: var(--mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; }
+    .section-line { flex: 1; height: 0.5px; background: var(--border); }
+
+    /* ── CONTENT CARDS ── */
+    .content-card {
+      background: var(--bg2); border: 0.5px solid var(--border);
+      border-left: 3px solid var(--green); border-radius: var(--radius-lg);
+      padding: 1.5rem 1.75rem; margin-bottom: 1rem;
+    }
+    .content-card h2 {
+      font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .content-card h2 .badge {
+      font-family: var(--mono); font-size: 10px;
+      background: #E1F5EE; color: #085041;
+      padding: 3px 8px; border-radius: 4px; font-weight: 400;
+    }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 0.75rem; }
+    .content-card p:last-child { margin-bottom: 0; }
+
+    /* ── CODE BLOCKS ── */
+    .code-block {
+      background: #04342C; border: 0.5px solid #0F6E56;
+      border-radius: var(--radius-md); padding: 1rem 1.25rem;
+      font-family: var(--mono); font-size: 12px; color: #E1F5EE;
+      margin: 0.75rem 0; overflow-x: auto;
+      line-height: 1.6;
+    }
+    .code-block .comment { color: #5DCAA5; }
+    .code-block .cmd-text { color: #9FE1CB; }
+
+    /* ── STEP LIST ── */
+    .step-list { list-style: none; margin: 0.5rem 0; }
+    .step-list li {
+      font-size: 14px; color: var(--muted); line-height: 1.65;
+      padding: 6px 0 6px 22px; position: relative;
+      border-top: 0.5px solid var(--border);
+    }
+    .step-list li:first-child { border-top: none; }
+    .step-list li::before {
+      content: '›'; position: absolute; left: 2px;
+      color: var(--green); font-size: 18px; line-height: 1.4;
+    }
+    .step-list li strong { color: var(--text); }
+
+    /* ── TABLE ── */
+    .data-table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 13px; }
+    .data-table th {
+      font-family: var(--mono); font-size: 10px; color: var(--green);
+      text-transform: uppercase; letter-spacing: 1.2px;
+      text-align: left; padding: 8px 12px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .data-table td { padding: 8px 12px; color: var(--muted); border-bottom: 0.5px solid var(--border); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table td:first-child { color: var(--text); font-weight: 500; }
+
+    /* ── TAG CHIPS ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+    .tag {
+      font-family: var(--mono); font-size: 11px;
+      background: var(--bg3); border: 0.5px solid var(--border);
+      color: var(--muted); padding: 3px 8px; border-radius: 4px;
+    }
+
+    /* ── ALERT ── */
+    .alert {
+      background: var(--bg3); border: 0.5px solid var(--border);
+      border-left: 3px solid #EF9F27; border-radius: var(--radius-md);
+      padding: 0.75rem 1rem; font-family: var(--mono); font-size: 11px;
+      color: var(--muted); margin: 0.75rem 0;
+    }
+    .alert strong { color: #EF9F27; }
+
+    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: center; }
+
+    @media (max-width: 480px) {
+      .container { padding: 1.5rem 1rem 4rem; }
+      .terminal-body { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="nav">
+    <a href="index.html">← portfolio</a>
+    <span class="nav-sep">/</span>
+    <span class="nav-current">home-lab</span>
+  </nav>
+
+  <div class="header">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="term-title">~/projects/home-lab — bash</span>
+    </div>
+    <div class="terminal-body">
+      <div class="prompt"><span class="p-user">user@cyberlab</span>:~$ <span class="cmd">cat home-lab.md</span></div>
+      <div class="name-block">
+        <div class="name-big">Home <em>Lab</em></div>
+        <div class="title-line">Wazuh SIEM · Kali Linux · Ubuntu <span class="blink">█</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WAZUH -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-label">// wazuh siem</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="content-card">
+      <h2>Single Node Installation <span class="badge">ongoing</span></h2>
+      <p>Wazuh is an open-source SIEM platform used for threat detection, integrity monitoring, and incident response. This setup documents deploying a single-node instance from scratch.</p>
+
+      <p><strong style="color:var(--text)">Step 1 — Run the install script:</strong></p>
+      <div class="code-block"><span class="comment"># Download and execute the Wazuh installer</span>
+<span class="cmd-text">curl -sO https://packages.wazuh.com/4.12/wazuh-install.sh &amp;&amp; \
+  sudo bash ./wazuh-install.sh -a</span></div>
+
+      <p><strong style="color:var(--text)">Step 2</strong> — When the script finishes, note down the <strong style="color:var(--green)">admin password</strong> shown in the terminal output.</p>
+      <p><strong style="color:var(--text)">Step 3</strong> — Open a browser and navigate to the IP address or DNS name of your Wazuh VM. The dashboard should load and give you access to your SIEM environment.</p>
+      <p><strong style="color:var(--text)">Step 4</strong> — Log in with username <code style="font-family:var(--mono);font-size:12px;color:var(--green)">admin</code> and the password from the terminal output.</p>
+    </div>
+
+    <div class="content-card">
+      <h2>Syslog Decoders &amp; Rules</h2>
+      <p>Decoders and rules for syslog integration are available at <code style="font-family:var(--mono);font-size:12px;color:var(--green)">github.com/object1st/wazuh-examples</code>. Instead of modifying the defaults, create separate files for cleaner organisation.</p>
+
+      <table class="data-table">
+        <thead><tr><th>File</th><th>Destination</th></tr></thead>
+        <tbody>
+          <tr><td>honeypot_application_decoders.xml</td><td>/var/ossec/etc/decoders/</td></tr>
+          <tr><td>ootbi_working_decoders.xml</td><td>/var/ossec/etc/decoders/</td></tr>
+          <tr><td>honeypot_application_rules.xml</td><td>/var/ossec/etc/rules/</td></tr>
+          <tr><td>ootbi_final_rules.xml</td><td>/var/ossec/etc/rules/</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-card">
+      <h2>Configuring Syslog Reception</h2>
+      <p>Add the following block to <code style="font-family:var(--mono);font-size:12px;color:var(--green)">/var/ossec/etc/ossec.conf</code> under the closing <code style="font-family:var(--mono);font-size:12px;color:var(--green)">&lt;/ossec_config&gt;</code> tag:</p>
+      <div class="code-block"><span class="comment">&lt;!-- ossec.conf syslog receiver block --&gt;</span>
+&lt;remote&gt;
+    &lt;connection&gt;syslog&lt;/connection&gt;
+    &lt;port&gt;514&lt;/port&gt;
+    &lt;protocol&gt;udp&lt;/protocol&gt;
+    &lt;allowed-ips&gt;192.168.0.0/24&lt;/allowed-ips&gt;
+    &lt;allowed-ips&gt;127.0.0.1&lt;/allowed-ips&gt;
+&lt;/remote&gt;</div>
+      <div class="alert"><strong>Note:</strong> Update allowed-ips to match your actual subnet before restarting.</div>
+      <div class="code-block"><span class="comment"># Restart the manager and verify the port</span>
+<span class="cmd-text">systemctl restart wazuh-manager
+ss -tunlp</span></div>
+      <div class="tag-row">
+        <span class="tag">Wazuh 4.12</span><span class="tag">SIEM</span><span class="tag">Syslog UDP 514</span><span class="tag">Threat Detection</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KALI -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-label">// kali linux vm</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="content-card">
+      <h2>VirtualBox Installation</h2>
+      <p>Kali Linux is a Debian-based distribution purpose-built for penetration testing and security research. You may need to enable virtualisation in BIOS/UEFI (Intel VT-x / AMD-V) before proceeding.</p>
+
+      <ul class="step-list">
+        <li>Open VirtualBox → <strong>Machine → New</strong></li>
+        <li><strong>Name &amp; OS:</strong> Set Type to <em>Linux</em>, Version to <em>Debian (64-bit)</em></li>
+        <li><strong>Memory:</strong> Minimum 2048 MB — more RAM means better tool performance</li>
+        <li><strong>Hard Disk:</strong> VDI format → Dynamically allocated → <strong>80 GB</strong></li>
+        <li>Click <strong>Create</strong> to finish the wizard</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h2>VM Settings</h2>
+      <table class="data-table">
+        <thead><tr><th>Section</th><th>Setting</th></tr></thead>
+        <tbody>
+          <tr><td>General → Advanced</td><td>Shared Clipboard: Bidirectional · Drag'n'Drop: Bidirectional</td></tr>
+          <tr><td>System → Motherboard</td><td>Boot Order: Hard Disk (1st), Optical (2nd), rest disabled</td></tr>
+          <tr><td>System → Processor</td><td>Processors: 2 · Enable PAE/NX: ✅</td></tr>
+          <tr><td>Display → Screen</td><td>Video Memory: 128 MB · Accelerated 3D: ❌ Disabled</td></tr>
+        </tbody>
+      </table>
+      <div class="alert"><strong>Warning:</strong> Accelerated 3D graphics causes known display issues — keep it disabled.</div>
+    </div>
+
+    <div class="content-card">
+      <h2>First Boot &amp; Install</h2>
+      <ul class="step-list">
+        <li>Press <strong>Start</strong> → click the folder icon to mount your Kali ISO</li>
+        <li>In Optical Disk Selector: <strong>Add</strong> → select your ISO → <strong>Choose → Start</strong></li>
+        <li>Proceed through the Kali installation wizard as a normal bare-metal install</li>
+        <li>The wizard auto-detects the VM and installs VirtualBox Guest Additions</li>
+      </ul>
+      <p>To expand storage later: power off → <strong>File → Tools → Virtual Media Manager</strong> → select the VDI → adjust size → <strong>Apply</strong> → use <code style="font-family:var(--mono);font-size:12px;color:var(--green)">gparted</code> inside Kali to extend the partition.</p>
+      <div class="tag-row">
+        <span class="tag">Kali Linux</span><span class="tag">VirtualBox 7.0</span><span class="tag">Penetration Testing</span><span class="tag">Debian</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- UBUNTU -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-label">// ubuntu vm</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="content-card">
+      <h2>VirtualBox Installation</h2>
+      <p>Ubuntu is a beginner-friendly Linux distribution ideal for general-purpose use, development, and learning. Download the ISO from <code style="font-family:var(--mono);font-size:12px;color:var(--green)">ubuntu.com/download/desktop</code> and VirtualBox from <code style="font-family:var(--mono);font-size:12px;color:var(--green)">virtualbox.org/wiki/Downloads</code>.</p>
+
+      <ul class="step-list">
+        <li>Click <strong>New</strong> — include "Ubuntu" in the name to auto-fill Type and Version</li>
+        <li>Point ISO Image to your downloaded file — leave unattended install enabled</li>
+        <li>Set credentials: default is <code style="font-family:var(--mono);font-size:12px;color:var(--green)">vboxuser / changeme</code> — <strong>change these</strong> or you'll get a user without sudo access</li>
+        <li>Enable <strong>Guest Additions</strong> for dynamic screen resizing and clipboard sharing</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h2>Recommended Resources</h2>
+      <table class="data-table">
+        <thead><tr><th>Resource</th><th>Recommended</th><th>Minimum</th></tr></thead>
+        <tbody>
+          <tr><td>RAM</td><td>8 GB</td><td>4 GB</td></tr>
+          <tr><td>CPUs</td><td>4</td><td>2</td></tr>
+          <tr><td>Hard Disk</td><td>50 GB</td><td>25 GB</td></tr>
+        </tbody>
+      </table>
+      <div class="alert"><strong>Tip:</strong> Stay in the green zones of each slider to avoid starving the host OS of resources.</div>
+    </div>
+
+    <div class="content-card">
+      <h2>Post-Install</h2>
+      <p>The unattended installer runs automatically on first boot — don't interact with the initial prompt. The machine reboots when done. Log in then run:</p>
+      <div class="code-block"><span class="cmd-text">sudo apt update &amp;&amp; sudo apt upgrade -y
+sudo snap refresh</span></div>
+      <div class="tag-row">
+        <span class="tag">Ubuntu 22.04</span><span class="tag">VirtualBox</span><span class="tag">Unattended Install</span><span class="tag">Guest Additions</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">// jordan flaum &nbsp;·&nbsp; <a href="index.html" style="color:var(--green);text-decoration:none;">← back to portfolio</a></div>
+
+</div>
+</body>
+</html>
