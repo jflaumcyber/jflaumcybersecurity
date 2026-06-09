@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diffie-Hellman Key Agreement — Cybersecurity Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #1D9E75;
+      --green-dim: #0F6E56;
+      --green-glow: #5DCAA5;
+      --green-pale: #E1F5EE;
+      --bg: #ffffff;
+      --bg2: #f6f6f4;
+      --bg3: #ededea;
+      --text: #1a1a18;
+      --muted: #5f5e5a;
+      --border: rgba(0,0,0,0.12);
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412; --bg2: #1c1c1a; --bg3: #242422;
+        --text: #f0ede6; --muted: #9e9c96; --border: rgba(255,255,255,0.1);
+        --green-pale: #0d2e22;
+      }
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    .terminal-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    .terminal-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-left: 8px; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.78rem; color: var(--green); text-decoration: none; margin-bottom: 2rem; }
+    .back-link:hover { color: var(--green-glow); }
+    .back-link::before { content: '←'; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; line-height: 1.6; margin-bottom: 2rem; }
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+    .meta-pill { font-family: var(--mono); font-size: 0.72rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; color: var(--muted); }
+    .meta-pill span { color: var(--green); }
+    .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+    .section { margin-bottom: 2.5rem; }
+    .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+    p { font-size: 0.97rem; line-height: 1.75; color: var(--muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+    .code-block { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: var(--radius-md); padding: 1rem 1.2rem; font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.7; overflow-x: auto; margin: 1rem 0; }
+    .code-block .comment { color: var(--muted); }
+    .code-block .keyword { color: var(--green); }
+    .highlight-card { background: var(--green-pale); border: 1px solid var(--green-dim); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin: 1.25rem 0; }
+    .highlight-card p { color: var(--text); margin-bottom: 0; }
+    .exchange-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-family: var(--mono); font-size: 0.8rem; }
+    .exchange-table th { background: var(--bg3); color: var(--green); font-weight: 600; padding: 0.6rem 0.9rem; text-align: left; border: 1px solid var(--border); }
+    .exchange-table td { padding: 0.55rem 0.9rem; border: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+    .exchange-table .highlight-cell { color: var(--green); }
+    .math-line { font-family: var(--mono); font-size: 0.88rem; color: var(--text); background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin: 0.5rem 0; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
+    .tag { font-family: var(--mono); font-size: 0.72rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; color: var(--muted); }
+    .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-mono { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label">~/portfolio/diffie-hellman-key-agreement</span>
+    </div>
+
+    <a href="index.html" class="back-link">Back to portfolio</a>
+
+    <div class="hero-eyebrow">Applied Cryptography — OSUIT</div>
+    <h1>Diffie-Hellman<br>Key Agreement</h1>
+    <p class="hero-sub">A worked implementation of the Diffie-Hellman key exchange protocol — demonstrating how two parties establish a shared secret over an insecure channel, verified hands-on using OpenSSL.</p>
+
+    <div class="meta-strip">
+      <div class="meta-pill">Course: <span>Intro to Applied Cryptography</span></div>
+      <div class="meta-pill">Date: <span>July 2023</span></div>
+      <div class="meta-pill">Tools: <span>OpenSSL</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-label">Concept</div>
+      <h2>What Is Diffie-Hellman?</h2>
+      <p>Diffie-Hellman (DH) is a key agreement protocol that allows two parties to independently derive the same shared secret, even if their entire exchange is observed by an eavesdropper. It works because of the mathematical difficulty of solving the discrete logarithm problem — computing the result of modular exponentiation is easy, but reversing it is computationally infeasible.</p>
+      <p>DH underpins modern TLS and is used every time you connect to an HTTPS website. The client and server negotiate a shared key without ever transmitting it directly — only public values cross the wire.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Manual Walkthrough</div>
+      <h2>Step-by-Step Example</h2>
+      <p>Using agreed public parameters modulus <strong>p = 5</strong> and base <strong>g = 12</strong>, with private keys <strong>a = 3</strong> (Jordan) and <strong>b = 6</strong> (Professor Webber):</p>
+
+      <table class="exchange-table">
+        <thead>
+          <tr><th>Step</th><th>Jordan (me)</th><th>Professor Webber</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Public params</td><td>p = 5, g = 12</td><td>p = 5, g = 12</td></tr>
+          <tr><td>Private key</td><td>a = 3</td><td>b = 6</td></tr>
+          <tr><td>Compute public value</td><td>A = g^a mod p</td><td>B = g^b mod p</td></tr>
+          <tr><td>Calculate</td><td>12³ mod 5 = 1728 mod 5 = <span class="highlight-cell">3</span></td><td>12⁶ mod 5 = 2985984 mod 5 = <span class="highlight-cell">4</span></td></tr>
+          <tr><td>Exchange →</td><td colspan="2" style="text-align:center;color:var(--green);">Send A=3 to Webber · Send B=4 to Jordan</td></tr>
+          <tr><td>Compute secret</td><td>s = B^a mod p = 4³ mod 5 = <span class="highlight-cell">4</span></td><td>s = A^b mod p = 3⁶ mod 5 = <span class="highlight-cell">4</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-card">
+        <p>Both parties independently arrive at <strong>s = 4</strong> — the shared secret. No eavesdropper watching the public exchange of A=3 and B=4 can derive the secret without solving the discrete logarithm.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">OpenSSL Implementation</div>
+      <h2>Running DH with OpenSSL</h2>
+      <p>The same exchange was implemented using OpenSSL on Windows, generating real cryptographic DH parameters, per-party key pairs, and verifying that both derived secrets match at the byte level.</p>
+      <div class="code-block">
+<span class="comment"># Step 1 — Generate shared public parameters</span>
+openssl genpkey -genparam -algorithm DH -out dhp.pem
+
+<span class="comment"># View parameters (encoded and plain text)</span>
+openssl pkeyparam -in dhp.pem -text
+
+<span class="comment"># Step 2 — Each party generates their private/public key pair</span>
+openssl genpkey -paramfile dhp.pem -out dhkey1.pem   <span class="comment"># Jordan</span>
+openssl genpkey -paramfile dhp.pem -out dhkey2.pem   <span class="comment"># Webber</span>
+
+<span class="comment"># Step 3 — Extract public keys for exchange</span>
+openssl pkey -in dhkey1.pem -pubout -out dhpub1.pem
+openssl pkey -in dhkey2.pem -pubout -out dhpub2.pem
+
+<span class="comment"># Step 4 — Each party derives the shared secret</span>
+openssl pkeyutl -derive -inkey dhkey1.pem -peerkey dhpub2.pem -out secret1.bin
+openssl pkeyutl -derive -inkey dhkey2.pem -peerkey dhpub1.pem -out secret2.bin
+
+<span class="comment"># Step 5 — Verify both secrets are identical</span>
+comp.exe secret1.bin secret2.bin
+      </div>
+      <p>Both <code style="font-family:var(--mono);font-size:0.85em;color:var(--green)">secret1.bin</code> and <code style="font-family:var(--mono);font-size:0.85em;color:var(--green)">secret2.bin</code> produced the same hex output when viewed in a hex editor, confirming the key agreement worked correctly. This shared binary value is what would be used as a symmetric encryption key for further communication.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Skills Demonstrated</div>
+      <div class="tag-list">
+        <span class="tag">Diffie-Hellman</span>
+        <span class="tag">Key Exchange</span>
+        <span class="tag">OpenSSL</span>
+        <span class="tag">Modular Arithmetic</span>
+        <span class="tag">Applied Cryptography</span>
+        <span class="tag">Symmetric Encryption</span>
+        <span class="tag">PKI Concepts</span>
+        <span class="tag">TLS Fundamentals</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-mono">Jordan Flaum — Cybersecurity Portfolio</span>
+      <span class="footer-mono"><a href="index.html" style="color:var(--green);text-decoration:none;">index.html</a></span>
+    </div>
+
+  </div>
+</body>
+</html>
