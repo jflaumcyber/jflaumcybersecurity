@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackjack Lucky 38 — Cybersecurity Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #1D9E75;
+      --green-dim: #0F6E56;
+      --green-glow: #5DCAA5;
+      --green-pale: #E1F5EE;
+      --bg: #ffffff;
+      --bg2: #f6f6f4;
+      --bg3: #ededea;
+      --text: #1a1a18;
+      --muted: #5f5e5a;
+      --border: rgba(0,0,0,0.12);
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412;
+        --bg2: #1c1c1a;
+        --bg3: #242422;
+        --text: #f0ede6;
+        --muted: #9e9c96;
+        --border: rgba(255,255,255,0.1);
+        --green-pale: #0d2e22;
+      }
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+
+    /* ── terminal bar ── */
+    .terminal-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .terminal-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-left: 8px; }
+
+    /* ── back nav ── */
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.78rem; color: var(--green); text-decoration: none; margin-bottom: 2rem; }
+    .back-link:hover { color: var(--green-glow); }
+    .back-link::before { content: '←'; }
+
+    /* ── hero ── */
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; line-height: 1.6; margin-bottom: 2rem; }
+
+    /* ── meta strip ── */
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+    .meta-pill { font-family: var(--mono); font-size: 0.72rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; color: var(--muted); }
+    .meta-pill span { color: var(--green); }
+
+    /* ── divider ── */
+    .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+
+    /* ── section ── */
+    .section { margin-bottom: 2.5rem; }
+    .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+    p { font-size: 0.97rem; line-height: 1.75; color: var(--muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── code block ── */
+    .code-block { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: var(--radius-md); padding: 1rem 1.2rem; font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.7; overflow-x: auto; margin: 1rem 0; }
+    .code-block .comment { color: var(--muted); }
+    .code-block .keyword { color: var(--green); }
+
+    /* ── highlight card ── */
+    .highlight-card { background: var(--green-pale); border: 1px solid var(--green-dim); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin: 1.25rem 0; }
+    .highlight-card p { color: var(--text); margin-bottom: 0; }
+
+    /* ── tag list ── */
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
+    .tag { font-family: var(--mono); font-size: 0.72rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; color: var(--muted); }
+
+    /* ── footer ── */
+    .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-mono { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label">~/portfolio/blackjack-lucky38</span>
+    </div>
+
+    <a href="index.html" class="back-link">Back to portfolio</a>
+
+    <div class="hero-eyebrow">Programming Project</div>
+    <h1>Blackjack<br>Lucky 38</h1>
+    <p class="hero-sub">A command-line Blackjack game built in Python, themed after the Lucky 38 Casino from Fallout: New Vegas. Explores game logic, state management, and user input handling.</p>
+
+    <div class="meta-strip">
+      <div class="meta-pill">Language: <span>Python</span></div>
+      <div class="meta-pill">Type: <span>Game Dev</span></div>
+      <div class="meta-pill">Interface: <span>CLI</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-label">Overview</div>
+      <h2>About the Project</h2>
+      <p>Blackjack Lucky 38 is a fully playable Blackjack game implemented in Python, named after the iconic Lucky 38 Casino from Fallout: New Vegas. The project demonstrates fundamental programming concepts including conditional logic, loops, functions, and object-oriented design.</p>
+      <p>The game supports a standard Blackjack ruleset: the player competes against a dealer, can hit or stand, and wins by reaching 21 or getting closer than the dealer without busting.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Features</div>
+      <h2>What It Does</h2>
+      <p>The game handles a full deck of cards, shuffling, dealing, and scoring. Special rules like Ace value switching (1 or 11) are implemented to prevent unnecessary busts. The dealer follows standard casino rules — must hit on 16 and stand on 17.</p>
+      <div class="highlight-card">
+        <p>The Ace logic is one of the more interesting challenges: the card dynamically shifts its value from 11 to 1 if the hand would otherwise bust, mirroring how a real casino table operates.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Core Logic</div>
+      <h2>How It Works</h2>
+      <p>Cards are represented as tuples with a face value and suit. A deck is generated programmatically and shuffled using Python's <code style="font-family:var(--mono);font-size:0.85em;color:var(--green)">random.shuffle()</code>. Hand totals are calculated with a dedicated scoring function that accounts for Aces.</p>
+      <div class="code-block">
+<span class="comment"># Ace-aware hand scoring</span>
+<span class="keyword">def</span> calculate_hand(hand):
+    total = 0
+    aces = 0
+    <span class="keyword">for</span> card <span class="keyword">in</span> hand:
+        value = card[0]
+        <span class="keyword">if</span> value == <span class="keyword">'A'</span>:
+            aces += 1
+            total += 11
+        <span class="keyword">elif</span> value <span class="keyword">in</span> [<span class="keyword">'J'</span>, <span class="keyword">'Q'</span>, <span class="keyword">'K'</span>]:
+            total += 10
+        <span class="keyword">else</span>:
+            total += <span class="keyword">int</span>(value)
+    <span class="keyword">while</span> total > 21 <span class="keyword">and</span> aces:
+        total -= 10
+        aces -= 1
+    <span class="keyword">return</span> total
+      </div>
+      <p>The game loop prompts the player to hit or stand each round, displays the dealer's hidden card only after the player stands, then resolves the outcome and reports the result.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Skills Demonstrated</div>
+      <div class="tag-list">
+        <span class="tag">Python</span>
+        <span class="tag">Game Logic</span>
+        <span class="tag">State Management</span>
+        <span class="tag">CLI Design</span>
+        <span class="tag">Control Flow</span>
+        <span class="tag">Functions & Scope</span>
+        <span class="tag">Random Module</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-mono">Jordan Flaum — Cybersecurity Portfolio</span>
+      <span class="footer-mono"><a href="index.html" style="color:var(--green);text-decoration:none;">index.html</a></span>
+    </div>
+
+  </div>
+</body>
+</html>
