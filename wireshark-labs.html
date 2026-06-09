@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireshark Labs — Cybersecurity Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #1D9E75;
+      --green-dim: #0F6E56;
+      --green-glow: #5DCAA5;
+      --green-pale: #E1F5EE;
+      --bg: #ffffff;
+      --bg2: #f6f6f4;
+      --bg3: #ededea;
+      --text: #1a1a18;
+      --muted: #5f5e5a;
+      --border: rgba(0,0,0,0.12);
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Syne', sans-serif;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141412; --bg2: #1c1c1a; --bg3: #242422;
+        --text: #f0ede6; --muted: #9e9c96; --border: rgba(255,255,255,0.1);
+        --green-pale: #0d2e22;
+      }
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    .terminal-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    .terminal-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-left: 8px; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.78rem; color: var(--green); text-decoration: none; margin-bottom: 2rem; }
+    .back-link:hover { color: var(--green-glow); }
+    .back-link::before { content: '←'; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+    .hero-sub { font-size: 1.05rem; color: var(--muted); max-width: 560px; line-height: 1.6; margin-bottom: 2rem; }
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+    .meta-pill { font-family: var(--mono); font-size: 0.72rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; color: var(--muted); }
+    .meta-pill span { color: var(--green); }
+    .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+    .section { margin-bottom: 2.5rem; }
+    .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+    h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
+    p { font-size: 0.97rem; line-height: 1.75; color: var(--muted); margin-bottom: 1rem; }
+    p:last-child { margin-bottom: 0; }
+    .code-block { background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: var(--radius-md); padding: 1rem 1.2rem; font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.7; overflow-x: auto; margin: 1rem 0; }
+    .code-block .comment { color: var(--muted); }
+    .code-block .keyword { color: var(--green); }
+    .highlight-card { background: var(--green-pale); border: 1px solid var(--green-dim); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin: 1.25rem 0; }
+    .highlight-card p { color: var(--text); margin-bottom: 0; }
+    .lab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    @media (max-width: 540px) { .lab-grid { grid-template-columns: 1fr; } }
+    .lab-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem 1.2rem; }
+    .lab-card-title { font-family: var(--mono); font-size: 0.78rem; color: var(--green); margin-bottom: 0.4rem; }
+    .lab-card p { font-size: 0.88rem; margin-bottom: 0; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
+    .tag { font-family: var(--mono); font-size: 0.72rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; color: var(--muted); }
+    .footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-mono { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-label">~/portfolio/wireshark-labs</span>
+    </div>
+
+    <a href="index.html" class="back-link">Back to portfolio</a>
+
+    <div class="hero-eyebrow">Network Analysis</div>
+    <h1>Wireshark<br>Labs</h1>
+    <p class="hero-sub">Hands-on packet capture and analysis exercises using Wireshark — dissecting real network traffic to understand protocols, spot anomalies, and trace communication flows.</p>
+
+    <div class="meta-strip">
+      <div class="meta-pill">Tool: <span>Wireshark</span></div>
+      <div class="meta-pill">Domain: <span>Network Forensics</span></div>
+      <div class="meta-pill">Protocols: <span>TCP/IP, HTTP, DNS, TLS</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-label">Overview</div>
+      <h2>Why Wireshark?</h2>
+      <p>Wireshark is the industry-standard tool for network traffic analysis. It captures packets in real time (or reads from saved <code style="font-family:var(--mono);font-size:0.85em;color:var(--green)">.pcap</code> files), dissects them layer by layer, and lets you filter and follow individual conversations. Understanding what normal traffic looks like is the first step to recognizing what's wrong.</p>
+      <p>These labs cover the most common protocols encountered in both everyday networking and security investigations, building intuition for what traffic looks like at the packet level.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Lab Exercises</div>
+      <h2>What Was Covered</h2>
+      <div class="lab-grid">
+        <div class="lab-card">
+          <div class="lab-card-title">TCP Three-Way Handshake</div>
+          <p>Capturing and labeling SYN, SYN-ACK, and ACK packets to visualize how connections are established and torn down.</p>
+        </div>
+        <div class="lab-card">
+          <div class="lab-card-title">HTTP Traffic Analysis</div>
+          <p>Following HTTP streams to reconstruct web requests and responses, including headers, cookies, and cleartext body content.</p>
+        </div>
+        <div class="lab-card">
+          <div class="lab-card-title">DNS Resolution</div>
+          <p>Tracing DNS queries and responses to understand how domain names are resolved and spotting potential DNS-based attacks.</p>
+        </div>
+        <div class="lab-card">
+          <div class="lab-card-title">TLS Handshake</div>
+          <p>Examining TLS negotiation packets to identify cipher suites, certificate exchanges, and the encrypted session setup.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Display Filters</div>
+      <h2>Key Filter Syntax</h2>
+      <p>Wireshark's display filter language is one of its most powerful features — it lets you zero in on exactly the traffic you need without touching the capture itself.</p>
+      <div class="code-block">
+<span class="comment"># Show only HTTP traffic</span>
+http
+
+<span class="comment"># Filter by IP address (source or destination)</span>
+ip.addr == 192.168.1.1
+
+<span class="comment"># Show only DNS queries</span>
+dns.flags.response == 0
+
+<span class="comment"># Follow a specific TCP stream</span>
+tcp.stream eq 5
+
+<span class="comment"># Find packets with the SYN flag set</span>
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+
+<span class="comment"># Show traffic between two specific hosts</span>
+ip.src == 10.0.0.1 && ip.dst == 10.0.0.2
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Key Takeaway</div>
+      <div class="highlight-card">
+        <p>The most important skill Wireshark teaches isn't operating the tool — it's building a mental model of what normal traffic looks like. Anomalies only stand out when you know the baseline.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Skills Demonstrated</div>
+      <div class="tag-list">
+        <span class="tag">Wireshark</span>
+        <span class="tag">Packet Capture</span>
+        <span class="tag">TCP/IP</span>
+        <span class="tag">DNS Analysis</span>
+        <span class="tag">HTTP Inspection</span>
+        <span class="tag">TLS</span>
+        <span class="tag">Network Forensics</span>
+        <span class="tag">Display Filters</span>
+        <span class="tag">pcap Files</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="footer-mono">Jordan Flaum — Cybersecurity Portfolio</span>
+      <span class="footer-mono"><a href="index.html" style="color:var(--green);text-decoration:none;">index.html</a></span>
+    </div>
+
+  </div>
+</body>
+</html>
