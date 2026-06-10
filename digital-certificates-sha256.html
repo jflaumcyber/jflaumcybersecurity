@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Certificates & SHA-256 — Jordan Flaum</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #1D9E75; --green-dim: #0F6E56; --green-glow: #5DCAA5; --green-pale: #E1F5EE;
+      --bg: #ffffff; --bg2: #f6f6f4; --bg3: #ededea;
+      --text: #1a1a18; --muted: #5f5e5a; --border: rgba(0,0,0,0.12);
+      --mono: 'Share Tech Mono', monospace; --sans: 'Syne', sans-serif;
+      --radius-md: 8px; --radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #141412; --bg2: #1c1c1a; --bg3: #242422; --text: #f0ede6; --muted: #9e9c96; --border: rgba(255,255,255,0.1); }
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+    .container { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    .nav { display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
+    .nav a { font-family: var(--mono); font-size: 11px; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); transition: border-color 0.15s, color 0.15s; }
+    .nav a:hover { border-color: var(--green); color: var(--green); }
+    .nav-sep { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+    .nav-current { font-family: var(--mono); font-size: 11px; color: var(--green); }
+    .header { margin-bottom: 2.5rem; }
+    .terminal-bar { display: flex; align-items: center; gap: 6px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-md) var(--radius-md) 0 0; padding: 9px 14px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #E24B4A; } .dot-y { background: #EF9F27; } .dot-g { background: #1D9E75; }
+    .term-title { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 8px; }
+    .terminal-body { background: #04342C; border: 0.5px solid #0F6E56; border-top: none; border-radius: 0 0 var(--radius-md) var(--radius-md); padding: 1.75rem 2rem; font-family: var(--mono); }
+    .prompt { color: #9FE1CB; font-size: 13px; margin-bottom: 4px; }
+    .prompt .p-user { color: #5DCAA5; }
+    .cmd { color: #E1F5EE; }
+    .name-block { margin-top: 1.25rem; }
+    .name-big { font-family: var(--sans); font-size: clamp(28px,5vw,42px); font-weight: 800; color: #E1F5EE; letter-spacing: -1.5px; line-height: 1; }
+    .name-big em { color: #5DCAA5; font-style: normal; }
+    .title-line { font-family: var(--mono); font-size: 13px; color: #9FE1CB; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+    .blink { animation: blink 1s step-end infinite; color: #5DCAA5; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .section { margin-bottom: 2.25rem; }
+    .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+    .section-label { font-family: var(--mono); font-size: 11px; color: var(--green); text-transform: uppercase; letter-spacing: 2px; white-space: nowrap; }
+    .section-line { flex: 1; height: 0.5px; background: var(--border); }
+    .content-card { background: var(--bg2); border: 0.5px solid var(--border); border-left: 3px solid var(--green); border-radius: var(--radius-lg); padding: 1.5rem 1.75rem; margin-bottom: 1rem; }
+    .content-card h2 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; }
+    .content-card h2 .badge { font-family: var(--mono); font-size: 10px; background: #E1F5EE; color: #085041; padding: 3px 8px; border-radius: 4px; font-weight: 400; }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 0.75rem; }
+    .content-card p:last-child { margin-bottom: 0; }
+    .code-block { background: #04342C; border: 0.5px solid #0F6E56; border-radius: var(--radius-md); padding: 1rem 1.25rem; font-family: var(--mono); font-size: 12px; color: #E1F5EE; margin: 0.75rem 0; overflow-x: auto; line-height: 1.6; }
+    .code-block .comment { color: #5DCAA5; }
+    .code-block .cmd-text { color: #9FE1CB; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 13px; }
+    .data-table th { font-family: var(--mono); font-size: 10px; color: var(--green); text-transform: uppercase; letter-spacing: 1.2px; text-align: left; padding: 8px 12px; border-bottom: 0.5px solid var(--border); }
+    .data-table td { padding: 8px 12px; color: var(--muted); border-bottom: 0.5px solid var(--border); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table td:first-child { color: var(--text); font-weight: 500; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+    .tag { font-family: var(--mono); font-size: 11px; background: var(--bg3); border: 0.5px solid var(--border); color: var(--muted); padding: 3px 8px; border-radius: 4px; }
+    .alert { background: var(--bg3); border: 0.5px solid var(--border); border-left: 3px solid #5DCAA5; border-radius: var(--radius-md); padding: 0.75rem 1rem; font-family: var(--mono); font-size: 11px; color: var(--muted); margin: 0.75rem 0; }
+    .footer { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); }
+    .footer a { color: var(--green); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="nav">
+      <a href="index.html">← index</a>
+      <span class="nav-sep">/</span>
+      <span class="nav-current">digital-certificates-sha256</span>
+    </div>
+
+    <div class="header">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="term-title">~/portfolio/digital-certificates-sha256 — bash</span>
+      </div>
+      <div class="terminal-body">
+        <div class="prompt"><span class="p-user">user@cyberlab</span>:~$ <span class="cmd">cat digital-certificates-sha256.md</span></div>
+        <div class="name-block">
+          <div class="name-big">Digital Certs <em>&amp; SHA-256</em></div>
+          <div class="title-line">OpenSSL · X.509 · Applied Cryptography <span class="blink">█</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">// overview</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-card">
+        <h2>What Are Digital Certificates? <span class="badge">Cryptography Lab</span></h2>
+        <p>A digital certificate is an electronic document that binds a public key to an identity — a person, organisation, or domain. Certificates follow the X.509 standard and are issued and signed by a Certificate Authority (CA).</p>
+        <p>When your browser connects to a website over HTTPS, it validates the server's certificate: verifying the CA's signature, checking the validity period, and confirming the certificate hasn't been revoked. This chain of trust underpins nearly all secure communication on the internet.</p>
+      </div>
+    </div>
+
+    <!-- CERTIFICATE ANATOMY -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">// certificate anatomy</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-card">
+        <h2>Reading an X.509 Certificate</h2>
+        <p>An X.509 certificate contains a subject (who it belongs to), an issuer (who signed it), a public key, a validity window, and a digital signature from the CA. OpenSSL's <code style="font-family:var(--mono);font-size:12px;color:var(--green)">x509</code> command lets you inspect every field.</p>
+        <div class="code-block"><span class="comment"># View a certificate in human-readable form</span>
+<span class="cmd-text">openssl x509 -in certificate.pem -text -noout</span>
+
+<span class="comment"># Key fields in the output</span>
+<span class="cmd-text">Subject: CN=example.com, O=Example Corp, C=US
+Issuer:  CN=DigiCert Global CA, O=DigiCert Inc
+Validity:
+    Not Before: Jan  1 00:00:00 2024 GMT
+    Not After:  Jan  1 00:00:00 2025 GMT
+Public Key Algorithm: rsaEncryption (2048 bit)
+Signature Algorithm: sha256WithRSAEncryption</span></div>
+
+        <table class="data-table">
+          <thead><tr><th>Field</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Subject</td><td>Who the certificate belongs to (domain, org, country)</td></tr>
+            <tr><td>Issuer</td><td>The CA that signed and vouches for this certificate</td></tr>
+            <tr><td>Validity</td><td>Not Before / Not After — the certificate's active window</td></tr>
+            <tr><td>Public Key</td><td>The public half of the key pair for this identity</td></tr>
+            <tr><td>Signature</td><td>CA's cryptographic signature over all of the above</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SHA-256 -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">// sha-256</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-card">
+        <h2>The Hash Function Underneath</h2>
+        <p>SHA-256 takes any input and produces a fixed 256-bit (32-byte) output. Two properties make it cryptographically useful: it is computationally infeasible to reverse, and even a one-character change in input produces a completely different output — the avalanche effect.</p>
+        <p>Certificates rely on SHA-256 for the CA's signature: the CA hashes the certificate contents, then encrypts that hash with its private key. Anyone with the CA's public key can decrypt and verify the hash matches — confirming nothing has been tampered with.</p>
+        <div class="code-block"><span class="comment"># Hash a string with SHA-256</span>
+<span class="cmd-text">echo -n "Jordan Flaum" | openssl dgst -sha256</span>
+
+<span class="comment"># Hash a file</span>
+<span class="cmd-text">openssl dgst -sha256 certificate.pem</span>
+
+<span class="comment"># Even one character changes everything (avalanche effect)</span>
+<span class="cmd-text">echo -n "Jordan Flaum"  | openssl dgst -sha256
+# → a3f9c2...
+echo -n "jordan Flaum"  | openssl dgst -sha256
+# → 8b17e4...  (completely different)</span></div>
+        <div class="alert"><strong>Avalanche Effect:</strong> SHA-256("Jordan Flaum") → a deterministic fingerprint. Change a single character and the output is unrecognisable.</div>
+      </div>
+    </div>
+
+    <!-- CHAIN OF TRUST -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-label">// chain of trust</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-card">
+        <h2>PKI Hierarchy</h2>
+        <p>Real-world PKI uses a hierarchy: a root CA signs intermediate CAs, which sign end-entity certificates. Browsers and operating systems ship with a built-in trust store of root CAs. If you can trace a certificate's signature chain up to a trusted root, the certificate is considered valid.</p>
+        <div class="code-block"><span class="comment"># Verify a full certificate chain</span>
+<span class="cmd-text">openssl verify -CAfile root-ca.pem -untrusted intermediate.pem server.pem</span>
+
+<span class="comment"># Inspect the chain from a live TLS connection</span>
+<span class="cmd-text">openssl s_client -connect example.com:443 -showcerts</span></div>
+        <div class="tag-row">
+          <span class="tag">X.509</span>
+          <span class="tag">OpenSSL</span>
+          <span class="tag">SHA-256</span>
+          <span class="tag">PKI</span>
+          <span class="tag">Certificate Chains</span>
+          <span class="tag">TLS</span>
+          <span class="tag">Applied Cryptography</span>
+          <span class="tag">Avalanche Effect</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">// jordan flaum &nbsp;·&nbsp; <a href="index.html">← back to portfolio</a></div>
+
+  </div>
+</body>
+</html>
